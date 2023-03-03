@@ -6,48 +6,24 @@
     <body>
         <h1> Write a new message. </h1>
         <!-- TODO: Add body -->
-
-        <p> Name: 
-            <input placeholder="John.."> 
-                
-            </input>
-        </p>
-        <p> Country: 
-            <input  placeholder="United Kingdom.."> 
-                
-            </input>
-        </p>
-        <p> Message: 
-            <input  placeholder="Hello world!"> 
-                
-            </input>
-        </p>
-        <span id="button"> loading.. </span>
+        
+        <form action="/newmessage" method="post"> 
+            <p> Name: 
+                <input type="text" name="username" placeholder="John.."> 
+                    
+                </input>
+            </p>
+            <p> Country: 
+                <input type="text" name="country" placeholder="United Kingdom.."> 
+                    
+                </input>
+            </p>
+            <p> Message: 
+                <input type="text" name="message" placeholder="Hello world!"> 
+                    
+                </input>
+            </p>
+            <input type="submit" value="Submit">
+        </form>
     </body>
 </html>
-<style>
-    .buttonify {
-        user-select: none;
-        margin: auto;
-        padding: 0.2%;
-        border-radius: 5px;
-        text-decoration: none;
-        border: 1px solid black;
-    }
-
-    .buttonify:hover {
-        background-color: rgba(0, 0, 0, 0.24);
-    }
-
-</style>
-<script>
-    let submit_button = document.getElementById("button");
-    
-    // Wait until JavaScript has been loaded to allow for submitting.
-    submit_button.innerHTML = "submit";
-    submit_button.className = "buttonify";
-
-    // TODO: Make .submit work
-
-    let xhr = new XMLHttpRequest
-</script>
