@@ -2,9 +2,10 @@
 Fullstack course, Spring 2023.
 ## Guestbook app that allows users to add messages to a public guestbook page
 
-How to run: 
-```js
-    // TODO: Paste commands to start the app.
+### How to run:
+Inside `fs_spring_project1` folder 
+```bash
+node index.js
 ```
 
 
