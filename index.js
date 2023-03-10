@@ -1,6 +1,7 @@
 // Libraries
 const fs = require("fs");
 const express = require("express");
+const { stringify } = require("querystring");
 
 
 // Global constants:
@@ -151,8 +152,10 @@ app.get("/:route", function(request, response) {
 
 // Handle POST.
 app.post("/ajaxmessage", function(request, response) {
-    console.log("> POST 'ajaxmessage'\n")
-    JSON_DATA.push(json_validation(request.body))        
+    console.log("> POST 'ajaxmessage'");     
+
+    JSON_DATA.push(json_validation(request.body))  
+    response.send( json_into_table( JSON_DATA ))    
     return; 
 });
 
