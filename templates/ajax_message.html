@@ -8,21 +8,22 @@
         <!-- TODO: Add body -->
 
         <p> Name: 
-            <input placeholder="John.."> 
+            <input id="name" placeholder="John.."> 
                 
             </input>
         </p>
         <p> Country: 
-            <input  placeholder="United Kingdom.."> 
+            <input id="country" placeholder="United Kingdom.."> 
                 
             </input>
         </p>
         <p> Message: 
-            <input  placeholder="Hello world!"> 
+            <input id="message" placeholder="Hello world!"> 
                 
             </input>
         </p>
         <span id="button"> loading.. </span>
+        <div id="present_data"> </div>
     </body>
 </html>
 <style>
@@ -48,16 +49,22 @@
     submit_button.className = "buttonify";
 
     // TODO: Make .submit work
-    var xhr = new XMLHttpRequest();
-    var url = "http://localhost:8181/ajaxmessage";
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            var json = JSON.parse(xhr.responseText);
-            console.log(json.email + ", " + json.password);
-        }
-    };
-    var data = JSON.stringify({"email": "hey@mail.com", "password": "101010"});
-    xhr.send(data);
+    submit_button.addEventListener("click", function() {
+        var xhr = new XMLHttpRequest();
+        var url = "http://localhost:8181/ajaxmessage";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                console.log(xhr.response)
+                document.getElementById("present_data").innerHTML = xhr.response
+            }
+        };
+        var data = JSON.stringify({
+            "username" : document.getElementById("name").value,
+            "message"  : document.getElementById("message").value,
+            "country"  : document.getElementById("country").value
+            });
+        xhr.send(data);
+    })
 </script>

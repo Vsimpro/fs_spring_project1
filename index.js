@@ -3,9 +3,11 @@ const fs = require("fs");
 const express = require("express");
 
 
-// Global variables:
+// Global constants:
 const app = express();
       app.use(express.json());
+      app.use(express.static("./static"))
+      app.use(express.urlencoded( {extended: true} )) // Might end up not needing this?
 
 const PORT = 8181;
 const HOST = "localhost";
@@ -30,18 +32,24 @@ const ROUTES = {
     "ajaxmessage.html"  : ajax_message
 };
 
-// Databank. TODO: Write into file (?)
+
+// Global variables:
 var JSON_DATA = [];
 
 
 /* Functionality Functions. */
-
 // Standardise the JSON data. If somethings undefined, make it "null."
+// Exception being the date and ID. If empty -> assing values.
 function json_validation(user_insert) {
-    // Exception being the date and ID. If empty -> assing values.
-    user_insert["id"]       = user_insert["id"]       || JSON_DATA.length; 
+    let timestamp = new Date();
+    let id = JSON_DATA.length + ((JSON_DATA[-1] != user_insert) * 1);
+                                // Because validation happens before insertation, up the ID if
+                                // last JSON in store is not the one we're validating.   
+                                // TODO: change this back to "if" statement to improve readability.
+
+    user_insert["id"]       = user_insert["id"]       || id; 
     user_insert["message"]  = user_insert["message"]  || "null";
-    user_insert["date"]     = user_insert["date"]     || "today"; // TODO: Get date.
+    user_insert["date"]     = user_insert["date"]     || timestamp.toString();
     user_insert["username"] = user_insert["username"] || "null";
     user_insert["country"]  = user_insert["country"]  || "null";
 
@@ -58,10 +66,10 @@ function json_into_table(data) {
         json_data = JSON.parse(data)
     }
 
-    console.log(json_data)
     let html_generated = "<table border='1'>"
     html_generated += `
-        <tr><th> Username. </th>
+        <tr><th> ID.       </th>
+            <th> Username. </th>
             <th> Message.  </th>
             <th> Country.  </th>
             <th> Date.  </th></tr>\n`
@@ -71,7 +79,8 @@ function json_into_table(data) {
         
         // TODO: Template rest of data into the table.
         html_generated += `
-        <tr><th> ${book_insert["username"]} </th>
+        <tr><th> ${book_insert["id"]} </th>
+            <th> ${book_insert["username"]} </th>
             <th> ${book_insert["message"]}  </th>
             <th> ${book_insert["country"]}  </th>
             <th> ${book_insert["date"]}     </th></tr>\n`
@@ -140,29 +149,29 @@ app.get("/:route", function(request, response) {
     return; 
 });
 
-
 // Handle POST.
 app.post("/ajaxmessage", function(request, response) {
-    console.log(request.body);      // your JSON
-    JSON_DATA.push(json_validation(request.body))    
-    response.send(json_into_table(JSON_DATA))
+    console.log("> POST 'ajaxmessage'\n")
+    JSON_DATA.push(json_validation(request.body))        
     return; 
 });
 
 app.post("/newmessage", function(request, response) {
-    let data = "";
-    let http_response = ERROR_RESPONSES["418"]
-    console.log("> POST 'newmessage'");
-
-    request.on('data', chunk => { data += chunk; });
-    req.on('end', () => {
-        console.log(data);
-        res.send('User added successfully');
-      });
-    console.log(data)
+    console.log("> POST 'newmessage'\n" + 
+                "> REDIRECT TO 'guestbook'");
     
-       
-    response.send(http_response);
+    try { 
+        JSON_DATA.push(json_validation(request.body))    
+
+        response.set("location", "/guestbook");
+        response.status(301).send()
+
+    } catch (error) {
+        console.log("Error: " + error + "while handling the request.")
+        response.send(ERROR_RESPONSES["418"])
+    }
+    
+    console.log(request.body)      
     return; 
 });
 
