@@ -3,7 +3,7 @@ const fs      = require("fs");
 const express = require("express");
 
 
-// Global constants:
+// Global variables:
 const app = express();
       app.use(express.json());
       app.use(express.static("./static"))
@@ -12,6 +12,8 @@ const app = express();
 const PORT = 8181;
 const HOST = "localhost";
 
+
+// Objects & Classes.
 const ERROR_RESPONSES = {
     "418" : "<strong>418</strong><br>I'm a teapot, I can't handle your request.",
     "404" : "<strong>404</strong><br>Sorry (ツ)",
@@ -29,64 +31,83 @@ const ROUTES = {
     "ajaxmessage"      : ajax_message,
 };
 
+class Guestbook {
+    constructor() {
+        this.book = [];
 
-// Global variables:
-var GUESTBOOK = [];
-
-
-/* Functionality Functions. */
-// Standardise the JSON data. If somethings undefined, make it "null."
-// Exception being the date and ID. If empty -> assing values.
-function json_validation(user_insert) {
-    let timestamp = new Date();
-    let id = GUESTBOOK.length + ((GUESTBOOK[-1] != user_insert) * 1);
-                                // Because validation happens before insertation, up the ID if
-                                // last JSON in store is not the one we're validating.   
-                                // TODO: change this back to "if" statement to improve readability.
-
-    user_insert["id"]       = user_insert["id"]       || id; 
-    user_insert["date"]     = user_insert["date"]     || timestamp.toString();
-    user_insert["country"]  = user_insert["country"]  || "null";
-    user_insert["message"]  = user_insert["message"]  || "null";
-    user_insert["username"] = user_insert["username"] || "null";
-    
-    return user_insert
-}
-
-// json_into_table : parses JSON given as a parameter into HTML tables.
-function json_into_table(data) {
-    if (data == undefined) { return undefined; }
-
-    // Make sure data is in JSON format.
-    let json_data = data;
-    if (typeof data == "string") {
-        json_data = JSON.parse(data)
+        try {
+            this.book = JSON.parse(get_file("./data/sample.json"))
+            console.log(" + Previous data read succesfully.")
+        } catch (error) {
+            console.log(" !! Error when reading previous data. Details;")
+            console.log(error)
+        }
     }
 
-    let table = "<table border='1'>"
-    table += `
-        <tr><th> ID.       </th>
+    read() {
+        return this.book;
+    }
+
+    // Write & Validate new data.
+    write(data) {
+        // TODO: Write into the file aswell.
+        this.book.push( this.validate( data ) ); return;
+    }
+
+    // Standardise the JSON data. If somethings undefined, make it "null."
+    // Exception being the date and ID. If empty -> assing values.
+    validate(user_insert) {
+        let timestamp = new Date();
+        let id = this.book.length + ((this.book[-1] != user_insert) * 1);
+                                    // Because validation happens before insertation, up the ID if
+                                    // last JSON in store is not the one we're validating.   
+
+        user_insert["id"]       = user_insert["id"]       || id; 
+        user_insert["date"]     = user_insert["date"]     || timestamp.toString();
+        user_insert["country"]  = user_insert["country"]  || "null";
+        user_insert["message"]  = user_insert["message"]  || "null";
+        user_insert["username"] = user_insert["username"] || "null";
+        
+        return user_insert
+    }
+
+    // Generate a HTML table from the data.
+    generate_table() {
+        if (this.book == undefined) { return undefined; }
+        
+        let json_data = this.book;
+        if (typeof data == "string") {
+            json_data = JSON.parse(data)
+        }
+        
+        let table = "<table border='1'>"
+        table += `
+            <tr><th> ID.       </th>
             <th> Username. </th>
             <th> Message.  </th>
             <th> Country.  </th>
             <th> Date.  </th></tr>\n`
-
-    for (let i = 0; i < json_data.length; i++) {
-        let book_row = json_validation(json_data[i]);
         
-        // TODO: Template rest of data into the table.
-        table+= `
-        <tr><th> ${book_row["id"]} </th>
-            <th> ${book_row["username"]} </th>
-            <th> ${book_row["message"]}  </th>
-            <th> ${book_row["country"]}  </th>
-            <th> ${book_row["date"]}     </th></tr>\n`
+        for (let i = 0; i < json_data.length; i++) {
+            // TODO: Remove this;
+            let book_row = this.validate(json_data[i]);
+                
+            // TODO: Template rest of data into the table.
+            table+= `
+            <tr><th> ${book_row["id"]} </th>
+                <th> ${book_row["username"]} </th>
+                <th> ${book_row["message"]}  </th>
+                <th> ${book_row["country"]}  </th>
+                <th> ${book_row["date"]}     </th></tr>\n`
+        }
+        
+        table += "</table>"
+        return table
     }
+}
 
-    table += "</table>"
-    return table
-};
 
+/* Functionality Functions. */
 // get_file : read and return a file and it's contents. Return undefined upon error.
 function get_file(file) {
     let content = undefined
@@ -116,7 +137,7 @@ function ajax_message() {
 }
 
 function guestbook() {   
-    return json_into_table(GUESTBOOK) || ERROR_RESPONSES["500"]
+    return GUESTBOOK.generate_table() || ERROR_RESPONSES["500"]
 };
 
 // new_message : render an input / show input.html
@@ -151,8 +172,8 @@ app.get("/:route", function(request, response) {
 app.post("/ajaxmessage", function(request, response) {
     console.log("> POST 'ajaxmessage'");     
 
-    GUESTBOOK.push(json_validation(request.body))  
-    response.send( json_into_table( GUESTBOOK ))    
+    GUESTBOOK.write(request.body)  
+    response.send( GUESTBOOK.generate_table() )    
     return; 
 });
 
@@ -161,13 +182,13 @@ app.post("/newmessage", function(request, response) {
                 "> REDIRECT TO 'guestbook'");
     
     try { 
-        GUESTBOOK.push(json_validation(request.body))    
+        GUESTBOOK.write(request.body)    
 
         response.set("location", "/guestbook");
         response.status(301).send()
 
     } catch (error) {
-        console.log("Error: " + error + "while handling the request.")
+        console.log("Error: '" + error + "' while handling the request.")
         response.send(ERROR_RESPONSES["418"])
     }
     
@@ -177,13 +198,8 @@ app.post("/newmessage", function(request, response) {
 
 
 /* Main flow. */
-try {
-    GUESTBOOK = JSON.parse(get_file("./data/sample.json"))
-    console.log(" + Previous data read succesfully.")
-} catch (error) {
-    console.log(" !! Error when reading previous data. Details;")
-    console.log(error)
-}
+
+var GUESTBOOK = new Guestbook();
 
 // Start the server.
 app.listen(PORT, function() { 
