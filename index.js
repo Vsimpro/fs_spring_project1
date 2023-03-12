@@ -16,7 +16,7 @@ const HOST = "localhost";
 const app = express();
       app.use(cors())
       app.use(express.json());
-      app.use(express.static("./static"))
+      app.use(express.static("./templates/static"))
       app.use(express.urlencoded( {extended: true} )) // Might end up not needing this?
 
 
