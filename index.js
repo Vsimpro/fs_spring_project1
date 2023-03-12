@@ -1,16 +1,18 @@
 // Libraries
 const fs      = require("fs");
+const cors    = require("cors") // Remove from prod, use only for testing.
 const express = require("express");
 
 
 // Global variables:
+const PORT = 8181;
+const HOST = "localhost";
+
 const app = express();
+      app.use(cors())
       app.use(express.json());
       app.use(express.static("./static"))
       app.use(express.urlencoded( {extended: true} )) // Might end up not needing this?
-
-const PORT = 8181;
-const HOST = "localhost";
 
 
 // Objects & Classes.
@@ -21,15 +23,31 @@ const ERROR_RESPONSES = {
 };
 
 const ROUTES = {
-    "index"       : index,
     "index.html"  : index,
-
-    "guestbook"       : guestbook,
-
-    "newmessage"      : new_message,
-
-    "ajaxmessage"      : ajax_message,
+    "guestbook"   : guestbook,
+    "newmessage"  : new_message,
+    "ajaxmessage" : ajax_message,
 };
+
+class Ratelimiter {
+    constructor() {
+        this.blacklist = {}
+    }
+
+    check(ip_address) {
+        let now = Date.now() / 1000
+        if (ip_address in this.blacklist) {
+            if ((now - this.blacklist[ip_address]) >= 5) {
+                this.blacklist[ip_address] = now
+                return true; 
+            }
+            
+            return false;
+        }
+        this.blacklist[ip_address] = now
+        return true;
+    }
+}
 
 class Guestbook {
     constructor() {
@@ -108,6 +126,14 @@ class Guestbook {
 
 
 /* Functionality Functions. */
+// check_permissions : check if user is allowed to send in an API request.
+function check_permissions(ip) {
+    let split_ip = ip.split(":")
+    let ipv4 = split_ip[split_ip.length - 1]
+
+    return RATELIMITER.check(ipv4);
+}
+
 // get_file : read and return a file and it's contents. Return undefined upon error.
 function get_file(file) {
     let content = undefined
@@ -127,7 +153,7 @@ function get_file(file) {
 };
 
 
-/* Route Functions: */
+/**  Route Functions: **/
 function index() {
     return get_file("templates/index.html", "utf8") || ERROR_RESPONSES["500"];
 };
@@ -146,14 +172,15 @@ function new_message() {
 };
 
 
-/* Routing via express: */
+/** Routing via express: **/
+// Handle GET.
+
 app.get("/", function(request, response) {
     console.log("> GET '/'");
     response.send(index()); 
     return; 
 });
 
-// Handle GET.
 app.get("/:route", function(request, response) {
     let route = `${request.params.route}`;
     let server_response = ERROR_RESPONSES["404"]
@@ -168,9 +195,16 @@ app.get("/:route", function(request, response) {
     return; 
 });
 
+
 // Handle POST.
 app.post("/ajaxmessage", function(request, response) {
     console.log("> POST 'ajaxmessage'");     
+
+    if (check_permissions(request.ip) != true) {
+        console.log(`\t${request.ip} ratelimited!`)
+        response.send("401")
+        return;
+    } 
 
     GUESTBOOK.write(request.body)  
     response.send( GUESTBOOK.generate_table() )    
@@ -178,14 +212,20 @@ app.post("/ajaxmessage", function(request, response) {
 });
 
 app.post("/newmessage", function(request, response) {
-    console.log("> POST 'newmessage'\n" + 
-                "> REDIRECT TO 'guestbook'");
+    console.log("> POST 'newmessage'\n")
+    
+    if (check_permissions(request.ip) != true) {
+        console.log(`\t${request.ip} ratelimited!`)
+        response.send("401")
+        return;
+    }
     
     try { 
         GUESTBOOK.write(request.body)    
 
         response.set("location", "/guestbook");
         response.status(301).send()
+        console.log("> REDIRECT TO 'guestbook'");
 
     } catch (error) {
         console.log("Error: '" + error + "' while handling the request.")
@@ -197,11 +237,10 @@ app.post("/newmessage", function(request, response) {
 });
 
 
-/* Main flow. */
-
+/** Main flow. **/
 var GUESTBOOK = new Guestbook();
+var RATELIMITER = new Ratelimiter();
 
-// Start the server.
 app.listen(PORT, function() { 
     console.log("Server starting on http://" + HOST + ":" + PORT) 
 });
