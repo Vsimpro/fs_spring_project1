@@ -5,13 +5,13 @@ Fullstack course, Spring 2023.
 ### How to run:
 Inside `fs_spring_project1` folder 
 ```bash
+npm install
 node index.js
 ```
 
 
 Links:
-- Heroku(?): #TODO
-- Selfhosting: #TODO
+- Render: #TODO
     
 
 Handbaked by;

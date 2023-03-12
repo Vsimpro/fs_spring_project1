@@ -17,8 +17,9 @@ const app = express();
 
 // Objects & Classes.
 const ERROR_RESPONSES = {
-    "418" : "<strong>418</strong><br>I'm a teapot, I can't handle your request.",
+    "401" : "<strong>401</strong><br>You're not allowed to make this request. Try again later.",
     "404" : "<strong>404</strong><br>Sorry (ツ)",
+    "418" : "<strong>418</strong><br>I'm a teapot, I can't handle your request.",
     "500" : "<strong>500</strong><brINTERNAL SERVER ERROR."
 };
 
@@ -201,8 +202,8 @@ app.post("/ajaxmessage", function(request, response) {
     console.log("> POST 'ajaxmessage'");     
 
     if (check_permissions(request.ip) != true) {
-        console.log(`\t${request.ip} ratelimited!`)
-        response.send("401")
+        console.log(`\t ! ${request.ip} ratelimited!`)
+        response.send( ERROR_RESPONSES["401"])
         return;
     } 
 
