@@ -6,7 +6,7 @@ Fullstack course, Spring 2023.
 Inside `fs_spring_project1` folder 
 ```bash
 npm install
-node index.js
+node ./index.js
 ```
 
 
