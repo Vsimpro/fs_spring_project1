@@ -79,7 +79,7 @@ function index() {
 
 // new_message : render an input / show input.html
 function new_message() {
-    return get_file("templates/new_message.html", "utf8") || ERROR_RESPONSES["500"]:
+    return get_file("templates/new_message.html", "utf8") || ERROR_RESPONSES["500"];
 };
 
 
