@@ -60,15 +60,11 @@ function get_file(file) {
         console.log(`!!! Error:  ${error.code} while fetching a file ${file}`); 
     }
 
-    return content
+    return content;
 };
 
 
 /**  Route Functions: **/
-function index() {
-    return get_file("templates/index.html", "utf8") || ERROR_RESPONSES["500"];
-};
-
 function ajax_message() {
     return get_file("templates/ajax_message.html")
 }
@@ -77,9 +73,13 @@ function guestbook() {
     return GUESTBOOK.generate_table() || ERROR_RESPONSES["500"]
 };
 
+function index() {
+    return get_file("templates/index.html", "utf8") || ERROR_RESPONSES["500"];
+};
+
 // new_message : render an input / show input.html
 function new_message() {
-    return get_file("templates/new_message.html", "utf8") || ERROR_RESPONSES["500"]
+    return get_file("templates/new_message.html", "utf8") || ERROR_RESPONSES["500"]:
 };
 
 
@@ -89,6 +89,11 @@ function new_message() {
 app.get("/", function(request, response) {
     console.log("> GET '/'");
     response.send(index()); 
+    return; 
+});
+
+app.get("/*", function(request, response) {
+    response.send(ERROR_RESPONSES["404"]);
     return; 
 });
 

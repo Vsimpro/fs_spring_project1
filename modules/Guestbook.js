@@ -47,9 +47,10 @@ class Guestbook {
         } catch (error) {
             console.log(" !! Could not store data. Details:")
             console.log(error)
+            return false;
         }
 
-        return;
+        return true;
     }
 
     // Standardise the JSON data. If somethings undefined, make it "null."
