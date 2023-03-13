@@ -123,7 +123,7 @@ app.post("/ajaxmessage", function(request, response) {
 });
 
 app.post("/newmessage", function(request, response) {
-    console.log("> POST 'newmessage'\n")
+    console.log("> POST 'newmessage'")
     
     if (check_permissions(request.ip) != true) {
         console.log(`\t${request.ip} ratelimited!`)
@@ -143,7 +143,7 @@ app.post("/newmessage", function(request, response) {
         response.send(ERROR_RESPONSES["418"])
     }
     
-    console.log(request.body)      
+    console.log("\n + JSON: " + JSON.stringify(request.body))      
     return; 
 });
 

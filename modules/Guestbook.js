@@ -3,13 +3,15 @@ const fs = require("fs");
 class Guestbook {
     constructor() {
         this.book = [];
+        this.storage_location = "./data/sample.json";
 
         try {
-            let data = fs.readFileSync("./data/sample.json", "utf8") 
-            if (data == undefined | data == null) 
-                { throw error; }
+            let data = fs.readFileSync(this.storage_location, "utf8") 
+            if (data == undefined | data == null) {
+                throw error;
+            }
 
-                this.book = JSON.parse(data)
+            this.book = JSON.parse(data)
 
             console.log(" + Previous data read succesfully.")
         } catch (error) {
@@ -23,9 +25,31 @@ class Guestbook {
     }
 
     // Write & Validate new data.
-    write(data) {
-        // TODO: Write into the file aswell.
-        this.book.push( this.validate( data ) ); return;
+    // TODO: Write this out clearer.
+    write(data) { 
+        let new_data = this.validate( data );
+
+        try {
+            let previous_data = fs.readFileSync(this.storage_location, "utf8") 
+            if (data == undefined | data == null) {
+                throw error;
+            }
+
+            let previous_json = JSON.parse(previous_data)
+                previous_json.push( new_data )
+            let string_data = JSON.stringify( previous_json )
+
+            // Commented out for the dev process. TODO: Uncomment before prod.
+            //fs.writeFileSync(this.storage_location, string_data)
+            
+            this.book.push( new_data );
+            
+        } catch (error) {
+            console.log(" !! Could not store data. Details:")
+            console.log(error)
+        }
+
+        return;
     }
 
     // Standardise the JSON data. If somethings undefined, make it "null."
