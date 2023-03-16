@@ -37,6 +37,7 @@ class Guestbook {
 
             let previous_json = JSON.parse(previous_data)
                 previous_json.push( new_data )
+                
             let string_data = JSON.stringify( previous_json )
 
             // Commented out for the dev process. TODO: Uncomment before prod.

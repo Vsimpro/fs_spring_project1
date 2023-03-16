@@ -1,7 +1,7 @@
 /*  Libraries  */
 // npm
 const fs      = require("fs");
-const cors    = require("cors") // Remove from prod, use only for testing.
+const cors    = require("cors") // TODO: Remove from prod, use only for testing.
 const express = require("express");
 
 // modules
@@ -13,8 +13,11 @@ const Guestbook   = require("./modules/Guestbook.js")
 const PORT = 8181;
 const HOST = "localhost";
 
+var GUESTBOOK   = new Guestbook();
+var RATELIMITER = new Ratelimiter();
+
 const app = express();
-      app.use(cors())
+      app.use(cors()) // TODO: Remove from prod.
       app.use(express.json());
       app.use(express.static("./templates/static"))
       app.use(express.urlencoded( {extended: true} )) // Might end up not needing this?
@@ -22,7 +25,7 @@ const app = express();
 
 // Objects & Classes.
 const ERROR_RESPONSES = {
-    "401" : "<strong>401</strong><br>You're not allowed to make this request. Try again later.",
+    "429" : "<strong>429</strong><br>Too many requests.",
     "404" : "<strong>404</strong><br>Sorry (ツ)",
     "418" : "<strong>418</strong><br>I'm a teapot, I can't handle your request.",
     "500" : "<strong>500</strong><brINTERNAL SERVER ERROR."
@@ -92,11 +95,6 @@ app.get("/", function(request, response) {
     return; 
 });
 
-app.get("/*", function(request, response) {
-    response.send(ERROR_RESPONSES["404"]);
-    return; 
-});
-
 app.get("/:route", function(request, response) {
     let route = `${request.params.route}`;
     let server_response = ERROR_RESPONSES["404"]
@@ -111,6 +109,10 @@ app.get("/:route", function(request, response) {
     return; 
 });
 
+app.get("/*", function(request, response) {
+    response.send(ERROR_RESPONSES["404"]);
+    return; 
+});
 
 // Handle POST.
 app.post("/ajaxmessage", function(request, response) {
@@ -118,7 +120,7 @@ app.post("/ajaxmessage", function(request, response) {
 
     if (check_permissions(request.ip) != true) {
         console.log(`\t ! ${request.ip} ratelimited!`)
-        response.send( ERROR_RESPONSES["401"])
+        response.send( ERROR_RESPONSES["429"])
         return;
     } 
 
@@ -132,7 +134,7 @@ app.post("/newmessage", function(request, response) {
     
     if (check_permissions(request.ip) != true) {
         console.log(`\t${request.ip} ratelimited!`)
-        response.send("401")
+        response.send("429")
         return;
     }
     
@@ -154,9 +156,6 @@ app.post("/newmessage", function(request, response) {
 
 
 /** Main flow. **/
-var GUESTBOOK   = new Guestbook();
-var RATELIMITER = new Ratelimiter();
-
 app.listen(PORT, function() { 
     console.log("Server starting on http://" + HOST + ":" + PORT) 
 });
