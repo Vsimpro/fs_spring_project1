@@ -1,1 +1,27 @@
-/* TODO: Unified style */
+body {
+    color: azure;
+    background-color: #222222;
+}
+
+.pure-menu-link {
+    color: azure;
+}
+
+a:hover {
+    color: #111111;
+}
+
+.box {
+    padding-top: 2%;
+    padding-left: 2%;
+    padding-right: 17%;
+    padding-bottom: 5%;
+
+    margin-top: 5%;
+    margin-left: -3%;
+
+    border: 2px solid white;
+    background-color: #333333;
+    box-shadow: 12px 12px 0px #111111;
+}
+

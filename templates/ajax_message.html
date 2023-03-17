@@ -1,51 +1,77 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- TODO: Add headers -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+        <link rel="stylesheet" href="/templates/static/styles.css">
     </head>
     <body>
-        <h1> Write a new message. </h1>
-        <!-- TODO: Add body -->
+        <div class="pure-g">
+            <div class="pure-u-1-3"> </div>
+            <div class="pure-u-1-3 box">  
+                <div class="pure-menu pure-menu-horizontal">
+                    <ul class="pure-menu-list">
+                        <li class="pure-menu-item">
+                            <a href="/" class="pure-menu-link"> home </a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="/guestbook"  class="pure-menu-link">  guestbook  </a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="/newmessage" class="pure-menu-link">  new message  </a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="/ajaxmessage" class="pure-menu-link">  ajax message  </a>
+                        </li>
+                    </ul>
+                </div>
 
-        <p id="error" hidden> You must fill all boxes! </p> 
-        <form name="page">
-            <p> Name: 
-                <input id="name" name="input_box" placeholder="John.."> 
-                    
-                </input>
-            </p>
-            <p> Country: 
-                <input id="country" name="input_box" placeholder="United Kingdom.."> 
-                    
-                </input>
-            </p>
-            <p> Message: 
-                <input id="message" name="input_box" placeholder="Hello world!"> 
-                    
-                </input>
-            </p>
-            <span id="button"> loading.. </span>
-            <div id="present_data"> </div>
-        </form>
+                <h2> Write a new message. </h2>
+
+                <p id="error" hidden> You must fill all boxes! </p> 
+                <form name="page" class="pure-control-group pure-form pure-form-aligned">
+                    <p class="tag"> Name: 
+                        <input id="name" name="input_box" placeholder="John.."> 
+                            
+                        </input>
+                    </p>
+                    <p  class="tag"> Country: 
+                        <input id="country" name="input_box" placeholder="United Kingdom.."> 
+                            
+                        </input>
+                    </p>
+                    <p  class="tag"> Message: 
+                        <input id="message" name="input_box" placeholder="Hello world!"> 
+                            
+                        </input>
+                    </p>
+                    <span id="button"> loading.. </span>
+                    <div id="present_data"> </div>
+                </form>
+            </div>
+            <div class="pure-u-1-3"> </div>
     </body>
 </html>
 <style>
     .buttonify {
         user-select: none;
+        color: #111111;
         margin: auto;
-        padding: 0.2%;
-        border-radius: 5px;
+        padding: 1%;
+        padding-right: 1.3%;
+        border-radius: 2px;
         text-decoration: none;
         border: 1px solid black;
+        background-color: white;
     }
 
     .buttonify:hover {
-        background-color: rgba(0, 0, 0, 0.24);
+        background-color: #888888;
     }
 
 </style>
 <script>
     let submit_button = document.getElementById("button");
+
     
     // Wait until JavaScript has been loaded to allow for submitting.
     submit_button.innerHTML = "submit";
@@ -85,7 +111,6 @@
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {               
-                
                 // Check for ratelimit error.
                 if (xhr.responseText.includes("429" )) {
                     alert("Slow down! Only 1 message every 5 seconds.")

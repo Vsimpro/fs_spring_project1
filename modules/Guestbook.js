@@ -81,19 +81,19 @@ class Guestbook {
         }
         
         let table = "<table border='1'>"
-        table += `
-            <tr><th> ID.       </th>
-            <th> Username. </th>
-            <th> Message.  </th>
-            <th> Country.  </th>
-            <th> Date.  </th></tr>\n`
+            table += `
+                <tr><th> ID.       </th>
+                <th> Username. </th>
+                <th> Message.  </th>
+                <th> Country.  </th>
+                <th> Date.  </th></tr>\n`
         
         for (let i = 0; i < json_data.length; i++) {
             // TODO: Remove this;
             let book_row = this.validate(json_data[i]);
                 
             // TODO: Template rest of data into the table.
-            table+= `
+            table += `
             <tr><th> ${book_row["id"]} </th>
                 <th> ${book_row["username"]} </th>
                 <th> ${book_row["message"]}  </th>
