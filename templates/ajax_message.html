@@ -7,23 +7,26 @@
         <h1> Write a new message. </h1>
         <!-- TODO: Add body -->
 
-        <p> Name: 
-            <input id="name" placeholder="John.."> 
-                
-            </input>
-        </p>
-        <p> Country: 
-            <input id="country" placeholder="United Kingdom.."> 
-                
-            </input>
-        </p>
-        <p> Message: 
-            <input id="message" placeholder="Hello world!"> 
-                
-            </input>
-        </p>
-        <span id="button"> loading.. </span>
-        <div id="present_data"> </div>
+        <p id="error" hidden> You must fill all boxes! </p> 
+        <form name="page">
+            <p> Name: 
+                <input id="name" name="input_box" placeholder="John.."> 
+                    
+                </input>
+            </p>
+            <p> Country: 
+                <input id="country" name="input_box" placeholder="United Kingdom.."> 
+                    
+                </input>
+            </p>
+            <p> Message: 
+                <input id="message" name="input_box" placeholder="Hello world!"> 
+                    
+                </input>
+            </p>
+            <span id="button"> loading.. </span>
+            <div id="present_data"> </div>
+        </form>
     </body>
 </html>
 <style>
@@ -48,8 +51,34 @@
     submit_button.innerHTML = "submit";
     submit_button.className = "buttonify";
 
-    // TODO: Make .submit work
     submit_button.addEventListener("click", function() {
+        let error = document.getElementById("error");
+
+        let name = document.getElementById("name").value;
+        let message = document.getElementById("message").value;
+        let country = document.getElementById("country").value;
+
+        let input_boxes = document.forms["page"]["input_box"];
+    
+        // Paint empty boxes red.
+        for (let i = 0; i < input_boxes.length; i++) {
+            let current_box = input_boxes[ i ];
+            
+            if (current_box.value == "") {
+                current_box.style.borderColor = "red";
+                continue;
+            }
+                current_box.style.borderColor = "";         
+        }
+
+        // If any value is "", exit.
+        if ([name, message, country].some((value) => value == "")) {
+            error.hidden = false;
+            return;
+        }
+
+        error.hidden = true;
+
         var xhr = new XMLHttpRequest();
         var url = "/ajaxmessage";
         xhr.open("POST", url, true);
@@ -57,20 +86,22 @@
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {               
                 
+                // Check for ratelimit error.
                 if (xhr.responseText.includes("429" )) {
                     alert("Slow down! Only 1 message every 5 seconds.")
                     return;
                 }
 
+                // Write the .html from the API to the page.
                 document.getElementById("present_data").innerHTML = xhr.response
             }
         };
-        
+
         var data = JSON.stringify({
-            "username" : document.getElementById("name").value,
-            "message"  : document.getElementById("message").value,
-            "country"  : document.getElementById("country").value
-            });
+            "username" : name,
+            "message"  : message,
+            "country"  : country
+        });
 
         xhr.send(data);
     })
