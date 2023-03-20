@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous">
+        <link rel="stylesheet" href="/styles.css">
+    </head>
+
+    <body>
+        <div class="pure-g">
+            <div class="box">
+                <div class="pure-menu pure-menu-horizontal">
+                    <ul class="pure-menu-list">
+                        <strong>
+                        <li class="pure-menu-item">
+                            <a href="/" class="pure-menu-link"> HOME</a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="/guestbook"  class="pure-menu-link">  GUESTBOOK  </a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="/newmessage" class="pure-menu-link">  NEW MESSAGE  </a>
+                        </li>
+                        <li class="pure-menu-item">
+                            <a href="/ajaxmessage" class="pure-menu-link">  AJAX MESSAGE  </a>
+                        </li>
+                        </strong>
+                    </ul>
+                </div>
+                {{ table }}
+            </div>
+        </div>
+    </body>
+</html>
+<style>
+    .box {
+        width: 50%;
+        margin: auto;
+        margin-top: 5%;
+        padding-right: 2%;
+    }
+
+    @media all and (orientation:portrait) {
+        .box {
+            width: 80%;
+        }
+    }
+</style>

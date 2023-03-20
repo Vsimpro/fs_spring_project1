@@ -73,7 +73,8 @@ function ajax_message() {
 }
 
 function guestbook() {   
-    return GUESTBOOK.generate_table() || ERROR_RESPONSES["500"]
+    return get_file("templates/guestbook.html").replace("{{ table }}", GUESTBOOK.generate_table())
+           || ERROR_RESPONSES["500"];
 };
 
 function index() {
