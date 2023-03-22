@@ -1,53 +1,108 @@
+@font-face {
+    font-family: "IBM";
+    src: url("/Model3x.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
 * {
+    color: white;
+    background-color: #121212;
+    font-family: monospace, monospace;
+    font-size: large;
+}
+
+a {
+    padding: 0;
+    text-decoration: none;
+}
+
+nav {
+    position: fixed;
     user-select: none;
+    margin: 0;
+    padding: 0;
+    height: 5vw;
+    width: 100%;
 }
 
-body {
-    color: azure;
-    background-color: #222222;
-}
-
-.pure-menu-link {
-    color: azure;
-}
-
-a:hover {
-    color: #111111;
-}
-
-.box {
-    display: block;
-
-    padding-top: 2%;
+.main {
+    width: 90%;
+    padding-top:  2%;
     padding-left: 2%;
-    padding-right: 10%;
-    padding-bottom: 5%;
-
-    margin-top: 5%;
-
-    margin-left: auto;
-    margin-right: auto;
-
-    width: auto;
-    margin-left: -2%;
-
-    border: 2px solid white;
-    background-color: #333333;
-    box-shadow: 12px 12px 0px #111111;
 }
 
-@media all and (orientation:portrait) {
+.horizontal-border {
+    height: 91px;
+    width: 90.1vw;
+    padding: 0;
+    padding-top:  1px;
+    padding-left: 1px;
+    margin-top: -12px;
+    border: 1px solid #666666;
+}
 
-    * {
-        box-sizing: border-box;
-        touch-action: manipulation;
-    }
+.vertical {
+    height: 91px;
+    width: 40vw;
+    padding: 0;
+    position: fixed;
+    text-align: center;
+    margin-left: 93px;
+    transform: rotate(90deg);
+    transform-origin: left top;
+    border: 1px solid #666666;
+    border-left: 0;
+}
 
-    .box {
-        width: 80%;
-        margin-left: 10%;
-        padding-right: 2%;
-        text-align: left;
-        font-size: 2vw;
-    }
+.pure-g > div {
+    box-sizing: border-box;
+}
+
+.pure-u-1-5 {
+    height: 90px;
+    padding-top: 25px;
+    padding-left: 25px;
+    padding-bottom: 20;
+}
+
+.link {
+    text-align: left;
+}
+
+.link:not(:hover) {
+    transition-duration: 0.4s;
+    box-shadow: 0px 0px 0px white;
+}
+
+.link:hover {
+    transition-duration: 0.4s;
+    box-shadow: 0px 2px 0px white;
+}
+
+.left-box {
+    height: 91px;
+    width: 91px;
+    border-right:1px solid #666666 ;
+}
+
+.sidebar {
+    font-family: "IBM";
+    font-size: xx-large;
+    width: 80%;
+    padding-top: -5px;
+}
+
+.vertical:hover .sidebar, .vertical:hover {
+    color: #121212;
+    background-color: white;
+}
+
+.content {
+    padding-top: 130px;
+    padding-left: 120px;
+}
+
+table {
+    user-select: none;
 }

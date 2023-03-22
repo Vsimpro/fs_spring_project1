@@ -19,7 +19,7 @@ var RATELIMITER = new Ratelimiter();
 const app = express();
       app.use(cors()) // TODO: Remove from prod.
       app.use(express.json());
-      app.use(express.static("./templates/static"))
+      app.use(express.static(__dirname + "/templates/static"))
       app.use(express.urlencoded( {extended: true} )) // Might end up not needing this?
 
 
@@ -107,11 +107,6 @@ app.get("/:route", function(request, response) {
     }
 
     response.send(server_response);
-    return; 
-});
-
-app.get("/*", function(request, response) {
-    response.send(ERROR_RESPONSES["404"]);
     return; 
 });
 
