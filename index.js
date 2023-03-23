@@ -150,6 +150,11 @@ app.post("/newmessage", function(request, response) {
     return; 
 });
 
+app.get("/*", function(request, response) {
+    console.log("> GET '/'");
+    response.send(ERROR_RESPONSES["404"]); 
+    return; 
+});
 
 /** Main flow. **/
 app.listen(PORT, function() { 
