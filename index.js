@@ -23,7 +23,8 @@ const app = express();
       app.use(express.urlencoded( {extended: true} )) // Might end up not needing this?
 
 
-// Objects & Classes.
+/* Objects & Classes. */
+// Standardised HTTP responses:
 const ERROR_RESPONSES = {
     "429" : "<strong>429</strong><br>Too many requests.",
     "404" : "<strong>404</strong><br>Sorry (ツ)",
@@ -31,12 +32,23 @@ const ERROR_RESPONSES = {
     "500" : "<strong>500</strong><brINTERNAL SERVER ERROR."
 };
 
+// All of the routes correspond to a function: 
 const ROUTES = {
     "index.html"  : index,
     "guestbook"   : guestbook,
     "newmessage"  : new_message,
     "ajaxmessage" : ajax_message,
 };
+
+// Components : their name + their file path.
+const COMPONENTS = {
+    "navbar"          : "templates/components/navbar.html",
+    "canvas"          : "templates/components/canvas.html",
+    "welcome"         : "templates/components/welcome.html",
+    "ajax_form"       : "templates/components/ajax_form.html",
+    "ajax_script"     : "templates/components/ajax_script.html",
+    "newmessage_form" : "templates/components/newmessage_form.html",
+}
 
 
 /* Functionality Functions. */
@@ -66,24 +78,54 @@ function get_file(file) {
     return content;
 };
 
+// Render a template upon request. By default components are empty.
+function render_template(base="", navbar="", site="", script="") {
+    console.log(" ~ rendering.. ")
+    let rendered_html = 
+            base
+             .replace("{{ navbar }}", navbar) // add navbar
+             .replace("{{ site }}",   site)   // add site
+             + script
+            || ERROR_RESPONSES["500"];
+
+    return rendered_html
+}
+
 
 /**  Route Functions: **/
+/* TODO: Render function? */
 function ajax_message() {
-    return get_file("templates/ajax_message.html")
+    return render_template(
+        get_file(COMPONENTS["canvas"]), 
+        get_file(COMPONENTS["navbar"]), 
+        get_file(COMPONENTS["ajax_form"]),
+        get_file(COMPONENTS["ajax_script"])
+    );
 }
 
 function guestbook() {   
-    return get_file("templates/guestbook.html").replace("{{ table }}", GUESTBOOK.generate_table())
-           || ERROR_RESPONSES["500"];
+    return render_template(
+        get_file(COMPONENTS["canvas"]), 
+        get_file(COMPONENTS["navbar"]), 
+        GUESTBOOK.generate_table(),
+    );
 };
 
 function index() {
-    return get_file("templates/index.html", "utf8") || ERROR_RESPONSES["500"];
+    return render_template(
+        get_file(COMPONENTS["canvas"]), 
+        get_file(COMPONENTS["navbar"]), 
+        get_file(COMPONENTS["welcome"]),
+    );
 };
 
 // new_message : render an input / show input.html
 function new_message() {
-    return get_file("templates/new_message.html", "utf8") || ERROR_RESPONSES["500"];
+    return render_template(
+        get_file(COMPONENTS["canvas"]), 
+        get_file(COMPONENTS["navbar"]), 
+        get_file(COMPONENTS["newmessage_form"]),
+    );
 };
 
 
