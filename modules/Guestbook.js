@@ -25,7 +25,6 @@ class Guestbook {
     }
 
     // Write & Validate new data.
-    // TODO: Write this out clearer.
     write(data) { 
         let new_data = this.validate( data );
 
@@ -80,7 +79,7 @@ class Guestbook {
             json_data = JSON.parse(data)
         }
         
-        let table = "<table border='1'>"
+        let table = "<table border='1' class='pure-table pure-table-bordered'>"
             table += `
                 <tr><th> ID.       </th>
                 <th> Username. </th>
@@ -89,10 +88,8 @@ class Guestbook {
                 <th> Date.  </th></tr>\n`
         
         for (let i = 0; i < json_data.length; i++) {
-            // TODO: Remove this;
             let book_row = this.validate(json_data[i]);
-                
-            // TODO: Template rest of data into the table.
+
             table += `
             <tr><th> ${book_row["id"]} </th>
                 <th> ${book_row["username"]} </th>

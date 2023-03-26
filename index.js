@@ -1,11 +1,10 @@
 /*  Libraries  */
 // npm
 const fs      = require("fs");
-const cors    = require("cors") // TODO: Remove from prod, use only for testing.
 const express = require("express");
 
 // modules
-const Ratelimiter = require("./modules/Api.js")
+const Ratelimiter = require("./modules/Ratelimiter.js")
 const Guestbook   = require("./modules/Guestbook.js")
 
 
@@ -17,7 +16,6 @@ var GUESTBOOK   = new Guestbook();
 var RATELIMITER = new Ratelimiter();
 
 const app = express();
-      app.use(cors()) // TODO: Remove from prod.
       app.use(express.json());
       app.use(express.static(__dirname + "/templates/static"))
       app.use(express.urlencoded( {extended: true} )) // Did end up needing this.

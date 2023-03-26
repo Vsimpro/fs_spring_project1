@@ -7,9 +7,10 @@
 
 * {
     color: white;
+    font-size: large;
+    user-select: none;
     background-color: #121212;
     font-family: monospace, monospace;
-    font-size: large;
 }
 
 a {

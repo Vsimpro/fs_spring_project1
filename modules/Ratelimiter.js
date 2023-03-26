@@ -1,4 +1,4 @@
-/* TODO: Change name to API, maybe move 'db' (loosely named) handling here? */
+/* Object that handles rate-limiting on the API. */
 class Ratelimiter {
     constructor() {
         this.blacklist = {}
