@@ -119,9 +119,9 @@ table {
     user-select: none;
     color: #111111;
     margin: auto;
-    padding: 1%;
-    padding-right: 2.5%;
-    padding-left: 2.5%;
+    padding: 10px;
+    padding-right: 10px;
+    padding-left: 10px;
     border-radius: 2px;
     text-decoration: none;
     border: 1px solid black;
@@ -135,3 +135,12 @@ table {
 input:valid {
     border: 1px solid green;
   }
+
+@media (orientation: portrait) {
+    a {
+        font-size: medium
+    }
+    .vertical { 
+        width: 55vw;
+    }
+}

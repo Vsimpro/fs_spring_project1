@@ -10,7 +10,7 @@ const Guestbook   = require("./modules/Guestbook.js")
 
 
 // Global variables:
-const PORT = 8181;
+const PORT = process.env.PORT || 3000;
 const HOST = "localhost";
 
 var GUESTBOOK   = new Guestbook();
@@ -20,7 +20,7 @@ const app = express();
       app.use(cors()) // TODO: Remove from prod.
       app.use(express.json());
       app.use(express.static(__dirname + "/templates/static"))
-      app.use(express.urlencoded( {extended: true} )) // Might end up not needing this?
+      app.use(express.urlencoded( {extended: true} )) // Did end up needing this.
 
 
 /* Objects & Classes. */
