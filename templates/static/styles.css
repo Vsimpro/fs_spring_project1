@@ -131,3 +131,7 @@ table {
 .buttonify:hover {
     background-color: #888888;
 }
+
+input:valid {
+    border: 1px solid green;
+  }

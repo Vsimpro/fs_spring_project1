@@ -40,14 +40,14 @@ const ROUTES = {
     "ajaxmessage" : ajax_message,
 };
 
-// Components : their name + their file path.
+// Components :
 const COMPONENTS = {
-    "navbar"          : "templates/components/navbar.html",
-    "canvas"          : "templates/components/canvas.html",
-    "welcome"         : "templates/components/welcome.html",
-    "ajax_form"       : "templates/components/ajax_form.html",
-    "ajax_script"     : "templates/components/ajax_script.html",
-    "newmessage_form" : "templates/components/newmessage_form.html",
+    "navbar"          : get_file("templates/components/navbar.html"),
+    "canvas"          : get_file("templates/components/canvas.html"),
+    "welcome"         : get_file("templates/components/welcome.html"),
+    "ajax_form"       : get_file("templates/components/ajax_form.html"),
+    "ajax_script"     : get_file("templates/components/ajax_script.html"),
+    "newmessage_form" : get_file("templates/components/newmessage_form.html"),
 }
 
 
@@ -78,12 +78,11 @@ function get_file(file) {
     return content;
 };
 
-// Render a template upon request. By default components are empty.
-function render_template(base="", navbar="", site="", script="") {
-    console.log(" ~ rendering.. ")
+// Render a template upon request. 
+function render_template(site="", script="") {
     let rendered_html = 
-            base
-             .replace("{{ navbar }}", navbar) // add navbar
+            COMPONENTS["canvas"]
+             .replace("{{ navbar }}", COMPONENTS["navbar"]) // add navbar
              .replace("{{ site }}",   site)   // add site
              + script
             || ERROR_RESPONSES["500"];
@@ -93,45 +92,35 @@ function render_template(base="", navbar="", site="", script="") {
 
 
 /**  Route Functions: **/
-/* TODO: Render function? */
 function ajax_message() {
     return render_template(
-        get_file(COMPONENTS["canvas"]), 
-        get_file(COMPONENTS["navbar"]), 
-        get_file(COMPONENTS["ajax_form"]),
-        get_file(COMPONENTS["ajax_script"])
+        site=   COMPONENTS["ajax_form"],
+        script= COMPONENTS["ajax_script"]
     );
 }
 
 function guestbook() {   
     return render_template(
-        get_file(COMPONENTS["canvas"]), 
-        get_file(COMPONENTS["navbar"]), 
-        GUESTBOOK.generate_table(),
+        site=  GUESTBOOK.generate_table()
     );
 };
 
 function index() {
     return render_template(
-        get_file(COMPONENTS["canvas"]), 
-        get_file(COMPONENTS["navbar"]), 
-        get_file(COMPONENTS["welcome"]),
+        site= COMPONENTS["welcome"],
     );
 };
 
 // new_message : render an input / show input.html
 function new_message() {
     return render_template(
-        get_file(COMPONENTS["canvas"]), 
-        get_file(COMPONENTS["navbar"]), 
-        get_file(COMPONENTS["newmessage_form"]),
+        site= COMPONENTS["newmessage_form"],
     );
 };
 
 
 /** Routing via express: **/
 // Handle GET.
-
 app.get("/", function(request, response) {
     console.log("> GET '/'");
     response.send(index()); 

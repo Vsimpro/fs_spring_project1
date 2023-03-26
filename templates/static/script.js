@@ -1,5 +1,19 @@
-/* TODO: Add global functionalities where needed (if, needed?) */
+/* Global functionalities */
 
+// Highlight the <a> element we're currently on:
+let links = document.getElementsByTagName("a");
+let page_path = window.location.href
+for (let i = 0; i < links.length; i++) {
+    this_link = links[i];
+    if (this_link.href == page_path) {
+        this_link.href = "#"
+        this_link.style.color = "grey";
+        break;
+    }
+}
+
+
+// Below are everything needed for the fancy animation on the left of the page:
 const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const sidebar_text = "@ G U E S T B O O K"
 
@@ -11,7 +25,6 @@ document.querySelector(".vertical-border").addEventListener("mouseover", functio
         if (interval > sidebar_text.length) {
             clearInterval(id)
         }
-
         interval += 1;
 
         let parse = ""
@@ -19,6 +32,7 @@ document.querySelector(".vertical-border").addEventListener("mouseover", functio
         parse += generateRandom(sidebar_text.slice(interval, sidebar_text.length))
         sidebar.innerText = parse        
     }, 42);
+
     sidebar.innerText = sidebar_text;
 });
 
